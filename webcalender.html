@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StudyFlow – ปฏิทินจัดสรรเวลางาน</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f5f4fb;--card:#fff;--tx:#1d1a33;--mu:#6f6a8f;--line:#e8e5f6;--pri:#6d5efc;--pri2:#ff5fa2;--ok:#12b76a;--warn:#f79009;--bad:#f04438;--soft:#f0eeff;--glass:rgba(255,255,255,.8);--sh:0 1px 2px rgba(40,30,100,.05),0 12px 32px rgba(80,60,200,.08);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0d1f;--card:#1a1733;--tx:#f2f0ff;--mu:#9d98c4;--line:#2d2858;--soft:#25214a;--glass:rgba(18,15,40,.8);--sh:0 12px 32px rgba(0,0,0,.35)}}
+:root[data-theme="dark"]{--bg:#0f0d1f;--card:#1a1733;--tx:#f2f0ff;--mu:#9d98c4;--line:#2d2858;--soft:#25214a;--glass:rgba(18,15,40,.8);--sh:0 12px 32px rgba(0,0,0,.35)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--tx);font-family:'Prompt','Noto Sans Thai',system-ui,sans-serif;line-height:1.55;background-color:var(--bg);background-image:radial-gradient(55rem 28rem at 90% -8%,rgba(109,94,252,.18),transparent),radial-gradient(40rem 24rem at -8% 8%,rgba(255,95,162,.13),transparent);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:11;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top,header nav{max-width:1080px;margin:0 auto;padding:10px 16px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:4px}
+.brand{display:flex;gap:10px;align-items:center}.brand b{display:block;line-height:1.1}.brand small{color:var(--mu);font-size:.72rem}
+.logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:1.2rem;background:linear-gradient(135deg,var(--pri),var(--pri2));box-shadow:0 6px 16px rgba(109,94,252,.35)}
+.user{display:flex;gap:8px;align-items:center;font-size:.8rem}
+.user .em{max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--soft);padding:5px 12px;border-radius:999px;color:var(--mu)}
+header nav{display:flex;gap:4px;overflow-x:auto;padding-top:4px;padding-bottom:10px}
+nav button{flex:1;min-width:max-content;border:0;background:transparent;color:var(--mu);padding:9px 14px;border-radius:12px;font:500 .88rem inherit;font-family:inherit;cursor:pointer;transition:.18s}
+nav button:hover{background:var(--soft)}
+nav button.on{background:linear-gradient(120deg,var(--pri),var(--pri2));color:#fff;box-shadow:0 6px 14px rgba(109,94,252,.3)}
+main{max-width:1080px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:var(--sh)}
+h2{margin:0 0 10px;font-size:1.1rem;font-weight:600}h3{margin:14px 0 6px;font-size:.92rem}
+.mu{color:var(--mu);font-size:.85rem}
+label{display:block;font-size:.78rem;color:var(--mu);margin-bottom:3px;font-weight:500}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--tx);font:inherit;transition:.15s}
+input:focus,textarea:focus,select:focus{outline:0;border-color:var(--pri);box-shadow:0 0 0 4px rgba(109,94,252,.16)}
+textarea{min-height:110px;resize:vertical}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.btn{border:0;border-radius:12px;padding:10px 16px;font:inherit;font-weight:500;cursor:pointer;color:#fff;background:linear-gradient(120deg,var(--pri),var(--pri2));box-shadow:0 6px 16px rgba(109,94,252,.28);transition:.15s}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.05)}.btn:active{transform:none}
+.btn.alt{background:var(--soft);color:var(--pri);box-shadow:none}.btn.sm{padding:5px 12px;font-size:.8rem;border-radius:10px}.btn.del{background:#fee4e2;color:var(--bad);box-shadow:none}.btn.big{width:100%;padding:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{justify-content:space-between}
+.chip{display:inline-block;padding:1px 10px;border-radius:999px;font-size:.72rem;color:#fff}
+.hero{border-radius:26px;padding:22px;margin-bottom:16px;color:#fff;background:linear-gradient(120deg,#6d5efc,#a855f7 55%,#ff5fa2);box-shadow:0 18px 40px rgba(109,94,252,.3)}
+.hero h1{margin:0;font-size:1.35rem}.hero p{margin:2px 0 14px;opacity:.9;font-size:.85rem}
+.stats{display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
+.stat{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:16px;padding:10px 12px;backdrop-filter:blur(6px)}
+.stat b{display:block;font-size:1.25rem;line-height:1.2}.stat span{font-size:.72rem;opacity:.9}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.dow{text-align:center;font-size:.75rem;color:var(--mu);padding:4px 0;font-weight:500}
+.day{min-height:88px;border:1px solid transparent;border-radius:14px;padding:5px 6px;font-size:.68rem;cursor:pointer;overflow:hidden;background:var(--soft);transition:.15s}
+.day:hover{transform:translateY(-2px);border-color:var(--pri)}
+.day.today b{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border-radius:50%;display:inline-grid;place-items:center;width:22px;height:22px}
+.day.sel{outline:2px solid var(--pri);background:var(--card)}.day.out{opacity:.35}
+.day b{font-size:.8rem}
+.ev{display:block;margin-top:2px;padding:1px 5px;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
+.ev.due{background:var(--bad)}
+.task{border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;background:var(--bg)}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--pri),var(--pri2));transition:width .4s}
+.week{display:grid;grid-template-columns:120px 1fr 56px;gap:10px;align-items:center;margin:10px 0;font-size:.85rem}
+.week .bar{height:16px}
+.alert{border-radius:14px;padding:11px 15px;margin-bottom:12px;font-size:.9rem}
+.alert.bad{background:#fee4e2;color:#912018}.alert.warn{background:#fef0c7;color:#7a2e0e}.alert.ok{background:#d1fadf;color:#05603a}
+.item{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line);font-size:.88rem}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.rk li{margin:8px 0}
+.login{min-height:calc(100vh - 40px);display:grid;place-items:center;padding:16px}
+.lcard{width:100%;max-width:430px;background:var(--card);border:1px solid var(--line);border-radius:28px;padding:30px 26px;box-shadow:var(--sh);text-align:center}
+.lcard .logo{width:64px;height:64px;font-size:2rem;margin:0 auto 12px;border-radius:20px}
+.lcard h1{margin:0;font-size:1.6rem}.lcard label{text-align:left}
+.feat{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0 18px}
+.feat span{background:var(--soft);color:var(--pri);padding:3px 11px;border-radius:999px;font-size:.75rem;font-weight:500}
+.err{color:var(--bad);font-size:.8rem;min-height:1.2em;text-align:left;margin:4px 0}
+@media(max-width:640px){.day{min-height:64px;font-size:.6rem}.week{grid-template-columns:78px 1fr 46px}.cal{gap:3px}.user .em{max-width:110px}.brand small{display:none}}
+</style>
+</head>
+<body>
+<header id="hd"><div class="top"><div class="brand"><span class="logo">📚</span><div><b>StudyFlow</b><small>วางแผนเวลาจากงานทุกวิชา</small></div></div><div class="user" id="who"></div></div><nav id="nav"></nav></header>
+<main><div id="view"></div></main>
+<script>
+const TH_M=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const TH_S=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const DOW=['อา','จ','อ','พ','พฤ','ศ','ส'];
+const STEPS=[['ทำความเข้าใจโจทย์/ค้นคว้า',.2],['วางโครงและร่างงาน',.25],['ลงมือทำส่วนหลัก',.35],['ตรวจทานและปรับแก้',.2]];
+const pad=n=>String(n).padStart(2,'0');
+const key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const fromKey=k=>{const p=k.split('-');return new Date(+p[0],+p[1]-1,+p[2])};
+const addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const today=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())};
+const fd=k=>{const d=fromKey(k);return d.getDate()+' '+TH_S[d.getMonth()]};
+const diffDays=(a,b)=>Math.round((a-b)/864e5);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fh=h=>(Math.round(h*10)/10).toString();
+const color=c=>{let h=0;for(const ch of c||'-')h=(h*31+ch.charCodeAt(0))%360;return 'hsl('+h+',62%,48%)'};
+
+let S=null,USER=null,META=null,tab='cal',cur=today(),sel=key(today()),draft={},note='';
+cur.setDate(1);
+/* ---------- บัญชีผู้ใช้ด้วยอีเมล + บันทึกข้อมูลอัตโนมัติ ---------- */
+const DEF=()=>({tasks:[],cap:[5,2,2,2,2,2,5],buf:15,snap:null});
+const rd=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
+const wr=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+const save=()=>{if(!USER)return;wr('sf_data:'+USER,S);if(META)wr('sf_meta:'+USER,META)};
+function enter(email){
+  USER=email;wr('sf_session',email);wr('sf_last',email);
+  let d=rd('sf_data:'+email);
+  if(!d){const old=rd('studyflow1');if(old&&old.tasks){d=old;try{localStorage.removeItem('studyflow1')}catch(e){}}}
+  S=Object.assign(DEF(),d||{});
+  const m=rd('sf_meta:'+email)||{created:Date.now(),visits:0};
+  META={created:m.created,visits:(m.visits||0)+1,prev:m.last||null,last:Date.now()};
+  save();
+}
+function login(){
+  const em=document.getElementById('em').value.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){document.getElementById('err').textContent='กรุณากรอกอีเมลให้ถูกต้อง เช่น name@university.ac.th';return}
+  enter(em);tab='cal';render();
+}
+function logout(){save();wr('sf_session',null);USER=null;S=null;META=null;render()}
+const fdt=ms=>{const d=new Date(ms);return d.getDate()+' '+TH_S[d.getMonth()]+' '+pad(d.getHours())+':'+pad(d.getMinutes())};
+function vLogin(){
+  const last=rd('sf_last')||'';
+  return `<div class="login"><div class="lcard"><div class="logo">📚</div><h1>StudyFlow</h1><p class="mu">เข้าสู่ระบบด้วยอีเมล เพื่อบันทึกงาน แผน และเวลาว่างของคุณ<br>ทุกครั้งที่กลับมา ข้อมูลจะพร้อมใช้งานทันที</p>
+  <div class="feat"><span>🤖 AI อ่านงาน</span><span>📊 ทำนายภาระงาน</span><span>🧠 จัดตารางอัจฉริยะ</span><span>🔄 จัดแผนใหม่</span></div>
+  <label>อีเมล</label><input id="em" type="email" inputmode="email" autocomplete="email" placeholder="name@university.ac.th" value="${esc(last)}" onkeydown="if(event.key==='Enter')login()">
+  <div class="err" id="err"></div><button class="btn big" onclick="login()">เข้าสู่ระบบ →</button>
+  <p class="mu" style="margin:14px 0 0">ข้อมูลของแต่ละอีเมลแยกจากกัน และถูกบันทึกอัตโนมัติในเบราว์เซอร์/อุปกรณ์นี้</p></div></div>`;
+}
+function hero(){
+  const open=S.tasks.filter(t=>rem(t)>.05),hrs=open.reduce((a,t)=>a+rem(t),0);
+  const nx=open.map(t=>t.due).sort()[0];
+  const name=USER.split('@')[0];
+  return `<div class="hero"><h1>สวัสดี ${esc(name)} 👋</h1><p>เข้าใช้งานครั้งที่ ${META.visits}${META.prev?' · ครั้งก่อน '+fdt(META.prev):' · ยินดีต้อนรับ'} · บันทึกอัตโนมัติแล้ว</p>
+  <div class="stats"><div class="stat"><b>${open.length}</b><span>งานที่ยังไม่เสร็จ</span></div><div class="stat"><b>${fh(hrs)}</b><span>ชม. ที่เหลือ</span></div><div class="stat"><b>${nx?fd(nx):'–'}</b><span>ส่งถัดไป</span></div></div></div>`;
+}
+
+/* ---------- Feature 1: อ่านรายละเอียดงาน ---------- */
+function extract(text){
+  const out={req:[]};
+  const lines=text.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+  const tl=text.match(/(?:ชื่องาน|งานที่ได้รับมอบหมาย|หัวข้อ|เรื่อง|งาน)\s*[:：]\s*(.+)/);
+  out.title=(tl?tl[1]:lines[0]||'').slice(0,80);
+  const cm=text.match(/\b([A-Za-z]{2,4}\s?-?\d{3,4})\b/)||text.match(/วิชา\s*[:：]?\s*([^\n,(]+)/);
+  if(cm)out.course=cm[1].trim();
+  const now=today();let d=null;
+  let m=text.match(/(\d{1,2})\s*[\/\-.]\s*(\d{1,2})\s*[\/\-.]\s*(\d{2,4})/);
+  if(m){let y=+m[3];if(y>2400)y-=543;else if(y<100)y+=2000;d=new Date(y,+m[2]-1,+m[1])}
+  if(!d){m=text.match(/(\d{1,2})\s*(?:เดือน\s*)?(มกราคม|กุมภาพันธ์|มีนาคม|เมษายน|พฤษภาคม|มิถุนายน|กรกฎาคม|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกายน|ธันวาคม|ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.)\s*(\d{4})?/);
+    if(m){let mi=TH_M.indexOf(m[2]);if(mi<0)mi=TH_S.indexOf(m[2]);let y=m[3]?+m[3]:now.getFullYear();if(y>2400)y-=543;d=new Date(y,mi,+m[1]);if(!m[3]&&d<addD(now,-30))d.setFullYear(y+1)}}
+  if(!d){m=text.match(/(?:อีก|ภายใน)\s*(\d{1,2})\s*วัน/);if(m)d=addD(now,+m[1])}
+  if(d&&!isNaN(d))out.due=key(d);
+  lines.forEach(l=>{if(/หน้า|คำ|ไฟล์|pdf|docx|pptx|กลุ่ม|เดี่ยว|อ้างอิง|ห้าม|ต้อง|รูปแบบ|ฟอนต์|ส่งผ่าน|คะแนน|นาที|ภาพ|สไลด์/i.test(l)&&l!==out.title&&out.req.length<6)out.req.push(l.slice(0,120))});
+  const pg=text.match(/(\d{1,3})\s*หน้า/);
+  if(pg)out.est=Math.min(40,Math.ceil(+pg[1]*1.5+2));
+  return out;
+}
+
+/* ---------- ตัวช่วยคำนวณ ---------- */
+const rem=t=>Math.max(0,t.est-(t.done||0));
+const wt=t=>1+(t.diff-3)*.15;
+const capDay=d=>Math.floor(S.cap[d.getDay()]*(1-S.buf/100)*2)/2;
+
+/* ---------- Feature 3: Smart Scheduler ---------- */
+function plan(){
+  const t0=today(),tk=key(t0);
+  const ws=S.tasks.filter(t=>rem(t)>.05).sort((a,b)=>a.due.localeCompare(b.due)||b.diff-a.diff).map(t=>{
+    const q=[];let c=0;
+    STEPS.forEach(([n,f])=>{const a=t.est*f;let s=Math.max(0,c+a-Math.max(t.done||0,c));c+=a;while(s>.04){const h=Math.min(2,s);q.push({s:n,h});s-=h}});
+    return {t,q,ed:t.due<tk?tk:t.due};
+  });
+  const items=[];
+  if(ws.length){
+    const last=ws.reduce((m,w)=>w.ed>m?w.ed:m,tk);
+    for(let d=t0;key(d)<=last;d=addD(d,1)){
+      const dk=key(d);let cap=capDay(d);
+      for(const w of ws){
+        if(cap<=0)break;
+        if(dk>w.ed||(dk===w.ed&&dk!==tk))continue;
+        let pt=0;
+        while(cap>0&&pt<3&&w.q.length){
+          const b=w.q[0],h=Math.min(b.h,cap,3-pt);
+          items.push({date:dk,id:w.t.id,step:b.s,h});cap-=h;pt+=h;b.h-=h;
+          if(b.h<=.01)w.q.shift();
+        }
+      }
+    }
+  }
+  const left=ws.map(w=>({t:w.t,h:w.q.reduce((a,b)=>a+b.h,0)})).filter(x=>x.h>.05);
+  return {items,left,ws};
+}
+
+/* ---------- Feature 2: Workload Predictor ---------- */
+function workload(){
+  const t0=today(),mon=addD(t0,-((t0.getDay()+6)%7)),W=[];
+  for(let i=0;i<8;i++){const s=addD(mon,i*7);W.push({s,need:0,cap:0,tasks:[]})}
+  const idx=d=>Math.floor(diffDays(d,mon)/7);
+  S.tasks.forEach(t=>{
+    const r=rem(t)*wt(t);if(r<=.05)return;
+    const due=fromKey(t.due),n=Math.max(1,diffDays(due,t0));
+    for(let i=0;i<n;i++){const k=idx(addD(t0,i));if(W[k])W[k].need+=r/n}
+    const k=idx(due);if(W[k]&&!W[k].tasks.includes(t))W[k].tasks.push(t);
+  });
+  W.forEach((w,i)=>{for(let j=0;j<7;j++){const d=addD(w.s,j);if(d>=t0)w.cap+=S.cap[d.getDay()]}w.r=w.cap>0?w.need/w.cap:(w.need>0?9:0)});
+  return W;
+}
+
+/* ---------- Feature 4: Replanning ---------- */
+function explain(P){
+  const t0=today(),L=[];
+  P.ws.map(w=>w.t).forEach(t=>{
+    const dl=diffDays(fromKey(t.due),t0);
+    const avail=P.items.filter(i=>i.id===t.id).reduce((a,i)=>a+i.h,0);
+    L.push({t,dl,score:rem(t)*wt(t)/Math.max(1,dl)});
+  });
+  return L.map((x,i)=>{
+    const why=x.dl<0?'เลยกำหนดแล้ว ต้องรีบที่สุด':x.dl===0?'ส่งวันนี้':'ส่งอีก '+x.dl+' วัน';
+    return `<li><b>${esc(x.t.title)}</b> <span class="mu">– ${why} · เหลือ ${fh(rem(x.t))} ชม. · ความยาก ${x.t.diff}/5 · ความเร่งด่วน ${x.score.toFixed(1)}</span></li>`;
+  }).join('');
+}
+function replan(){
+  const P=plan(),t0=key(today());
+  let behind=0;
+  if(S.snap){
+    S.snap.items.filter(i=>i.date<t0).forEach(i=>{behind+=i.h});
+    let doneSince=0;S.tasks.forEach(t=>{doneSince+=Math.max(0,(t.done||0)-((S.snap.base||{})[t.id]||0))});
+    behind=Math.max(0,behind-doneSince);
+  }
+  const base={};S.tasks.forEach(t=>base[t.id]=t.done||0);
+  S.snap={items:P.items,base,date:t0};save();
+  note=behind>0.05?`ยกงานค้างจากแผนเดิมประมาณ ${fh(behind)} ชม. มาจัดใหม่แล้ว โดยเรียงตามวันส่งก่อน แล้วดูความยากและชั่วโมงที่เหลือ`:'จัดตารางใหม่จากวันนี้เรียบร้อย ตามวันส่งและเวลาที่เหลือ';
+  render();
+}
+
+/* ---------- Views ---------- */
+function render(){
+  const hd=document.getElementById('hd'),v=document.getElementById('view');
+  if(!USER){hd.style.display='none';v.innerHTML=vLogin();return}
+  hd.style.display='';
+  document.getElementById('who').innerHTML=`<span class="em" title="${esc(USER)}">${esc(USER)}</span><button class="btn alt sm" onclick="logout()">ออกจากระบบ</button>`;
+  const tabs=[['cal','📅 ปฏิทิน'],['tasks','📝 งาน + AI อ่านงาน'],['load','📊 ภาระงาน'],['plan','🧠 แผน & จัดใหม่']];
+  document.getElementById('nav').innerHTML=tabs.map(([k,n])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';render()">${n}</button>`).join('');
+  v.innerHTML=(tab==='cal'?hero():'')+{cal:vCal,tasks:vTasks,load:vLoad,plan:vPlan}[tab]();
+}
+function alertHTML(){
+  const W=workload(),bad=W.find(w=>w.r>=1),warn=W.find(w=>w.r>=.75);
+  const w=bad||warn;if(!w)return S.tasks.length?'<div class="alert ok">✅ ภาระงานใน 8 สัปดาห์ข้างหน้ายังอยู่ในระดับที่จัดการได้</div>':'';
+  const e=addD(w.s,6);
+  return `<div class="alert ${bad?'bad':'warn'}">${bad?'🚨':'⚠️'} สัปดาห์ ${fd(key(w.s))} – ${fd(key(e))} ${bad?'ภาระงานสูงผิดปกติ':'ภาระงานค่อนข้างสูง'} (${Math.round(w.r*100)}% ของเวลาว่าง) ควรเริ่มเตรียมงานล่วงหน้าตั้งแต่สัปดาห์ก่อนหน้า${w.tasks.length?' – งานที่ส่งในสัปดาห์นั้น: '+w.tasks.map(t=>esc(t.title)).join(', '):''}</div>`;
+}
+function vCal(){
+  const P=plan(),y=cur.getFullYear(),m=cur.getMonth(),first=new Date(y,m,1),start=addD(first,-first.getDay());
+  let h=alertHTML()+`<div class="card"><div class="row sp"><button class="btn alt sm" onclick="cur=new Date(${y},${m-1},1);render()">◀</button><h2 style="margin:0">${TH_M[m]} ${y+543}</h2><button class="btn alt sm" onclick="cur=new Date(${y},${m+1},1);render()">▶</button></div><div class="cal" style="margin-top:10px">`;
+  DOW.forEach(d=>h+=`<div class="dow">${d}</div>`);
+  for(let i=0;i<42;i++){
+    const d=addD(start,i),k=key(d);
+    const due=S.tasks.filter(t=>t.due===k),its=P.items.filter(x=>x.date===k);
+    const by={};its.forEach(x=>by[x.id]=(by[x.id]||0)+x.h);
+    h+=`<div class="day ${k===key(today())?'today':''} ${k===sel?'sel':''} ${d.getMonth()!==m?'out':''}" onclick="sel='${k}';render()"><b>${d.getDate()}</b>`;
+    due.forEach(t=>h+=`<span class="ev due">🚩 ${esc(t.title)}</span>`);
+    Object.keys(by).forEach(id=>{const t=S.tasks.find(t=>t.id==id);h+=`<span class="ev" style="background:${color(t.course)}">${fh(by[id])}ชม. ${esc(t.title)}</span>`});
+    h+='</div>';
+  }
+  h+='</div></div>';
+  const its=P.items.filter(x=>x.date===sel),due=S.tasks.filter(t=>t.due===sel);
+  h+=`<div class="card"><h2>รายละเอียดวันที่ ${fd(sel)}</h2>`;
+  if(!its.length&&!due.length)h+='<p class="mu">ยังไม่มีงานหรือกำหนดส่งในวันนี้ – เป็นวันพักหรือวันเผื่อเวลา 🌿</p>';
+  due.forEach(t=>h+=`<div class="alert bad">🚩 กำหนดส่ง: ${esc(t.title)} (${esc(t.course||'-')})</div>`);
+  its.forEach(x=>{const t=S.tasks.find(t=>t.id==x.id);h+=`<div class="item"><span class="dot" style="background:${color(t.course)}"></span><div style="flex:1"><b>${esc(t.title)}</b> <span class="mu">${esc(t.course||'')}</span><br><span class="mu">${x.step} · ${fh(x.h)} ชม.</span></div><button class="btn sm" onclick="doneH(${t.id},${x.h})">เสร็จแล้ว ✓</button></div>`});
+  if(its.length)h+=`<p class="mu">☕ พัก 10–15 นาทีทุก ๆ 2 ชม. และเผื่อเวลา ${S.buf}% ไว้สำหรับเหตุไม่คาดคิด</p>`;
+  return h+'</div>';
+}
+function vTasks(){
+  const d=draft;
+  let h=`<div class="card"><h2>🤖 AI อ่านรายละเอียดงาน</h2><p class="mu">วางข้อความจากใบงาน/ประกาศของอาจารย์ที่ได้รับอนุญาตให้ใช้ AI ระบบจะดึงชื่องาน วิชา วันส่ง และข้อกำหนดมาเติมในฟอร์มให้ตรวจสอบ</p>
+  <textarea id="raw" placeholder="ตัวอย่าง:&#10;งาน: รายงานวิเคราะห์ตลาดสินค้าออนไลน์&#10;วิชา MKT201&#10;ส่งวันที่ 30/11/2569 ผ่าน LMS&#10;ความยาว 10 หน้า ไฟล์ PDF&#10;ทำเป็นกลุ่ม 4 คน ต้องมีอ้างอิงอย่างน้อย 5 แหล่ง"></textarea>
+  <div class="row" style="margin-top:8px"><button class="btn" onclick="runExtract()">✨ ดึงข้อมูลงาน</button><button class="btn alt" onclick="sample()">โหลดตัวอย่างงาน</button></div></div>
+  <div class="card"><h2>เพิ่ม / ตรวจสอบงาน</h2><div class="grid">
+  <div><label>ชื่องาน</label><input id="f_t" value="${esc(d.title)}"></div>
+  <div><label>วิชา</label><input id="f_c" value="${esc(d.course)}"></div>
+  <div><label>วันส่ง</label><input type="date" id="f_d" value="${d.due||''}"></div>
+  <div><label>ความยาก (1–5)</label><select id="f_f">${[1,2,3,4,5].map(n=>`<option ${n==(d.diff||3)?'selected':''}>${n}</option>`).join('')}</select></div>
+  <div><label>เวลาที่คาดว่าจะใช้ (ชม.)</label><input type="number" min="0.5" step="0.5" id="f_e" value="${d.est||6}"></div></div>
+  <label style="margin-top:8px">ข้อกำหนดสำคัญ (หนึ่งบรรทัดต่อข้อ)</label><textarea id="f_r" style="min-height:70px">${esc((d.req||[]).join('\n'))}</textarea>
+  <div class="row" style="margin-top:8px"><button class="btn" onclick="addTask(false)">＋ เพิ่มงาน</button><button class="btn alt" onclick="addTask(true)">⚡ เพิ่มเป็นงานด่วน + จัดแผนใหม่</button></div></div>`;
+  h+='<div class="card"><h2>รายการงาน ('+S.tasks.length+')</h2>';
+  if(!S.tasks.length)h+='<p class="mu">ยังไม่มีงาน ลองกด “โหลดตัวอย่างงาน” ได้เลย</p>';
+  [...S.tasks].sort((a,b)=>a.due.localeCompare(b.due)).forEach(t=>{
+    const dl=diffDays(fromKey(t.due),today()),p=Math.min(100,(t.done||0)/t.est*100);
+    h+=`<div class="task"><div class="row sp"><div><b>${esc(t.title)}</b> <span class="chip" style="background:${color(t.course)}">${esc(t.course||'ไม่ระบุวิชา')}</span></div><span class="mu">${dl<0?'เลยกำหนด':dl===0?'ส่งวันนี้':'อีก '+dl+' วัน'} · ${fd(t.due)}</span></div>
+    <div class="mu">ความยาก ${'★'.repeat(t.diff)}${'☆'.repeat(5-t.diff)} · ใช้เวลา ${fh(t.est)} ชม. · ทำแล้ว ${fh(t.done||0)} ชม.</div>
+    <div class="bar" style="margin:6px 0"><i style="width:${p}%"></i></div>
+    ${(t.req||[]).length?'<ul class="mu" style="margin:4px 0;padding-left:18px">'+t.req.map(r=>'<li>'+esc(r)+'</li>').join('')+'</ul>':''}
+    <div class="row"><button class="btn alt sm" onclick="doneH(${t.id},1)">+1 ชม.</button><button class="btn del sm" onclick="delTask(${t.id})">ลบ</button></div></div>`;
+  });
+  return h+'</div>';
+}
+function vLoad(){
+  const W=workload();
+  let h=alertHTML()+`<div class="card"><h2>📊 AI Workload Predictor</h2><p class="mu">วิเคราะห์จากวันส่ง ความยาก (ถ่วงน้ำหนัก) เวลาที่คาดว่าจะใช้ และเวลาว่างของแต่ละวัน แล้วเทียบเป็นสัดส่วนภาระงานต่อสัปดาห์</p>`;
+  W.forEach(w=>{
+    const c=w.r>=1?'var(--bad)':w.r>=.75?'var(--warn)':'var(--ok)';
+    h+=`<div class="week"><span>${fd(key(w.s))} – ${fd(key(addD(w.s,6)))}</span><div class="bar"><i style="width:${Math.min(100,w.r/1.5*100)}%;background:${c}"></i></div><b style="color:${c}">${w.cap===0&&w.need===0?'–':Math.round(w.r*100)+'%'}</b></div>`;
+  });
+  h+='<p class="mu">🟢 ต่ำกว่า 75% ปกติ · 🟠 75–99% ค่อนข้างสูง · 🔴 ตั้งแต่ 100% เกินเวลาว่าง (แท่งเต็ม = 150%)</p></div>';
+  h+='<div class="card"><h2>⏳ เวลาว่างต่อวัน (ชม.)</h2><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(70px,1fr))">'+DOW.map((d,i)=>`<div><label>${d}</label><input type="number" min="0" max="16" step="0.5" value="${S.cap[i]}" onchange="S.cap[${i}]=+this.value;save();render()"></div>`).join('')+'</div></div>';
+  return h;
+}
+function vPlan(){
+  const P=plan();
+  let h=`<div class="card"><h2>🧠 AI Smart Scheduler & Replanning</h2><div class="row"><div style="width:200px"><label>เวลาเผื่อเหตุไม่คาดคิด (%)</label><input type="number" min="0" max="50" value="${S.buf}" onchange="S.buf=+this.value;save();render()"></div>
+  <button class="btn" onclick="replan()">🔄 จัดตารางใหม่จากวันนี้</button><button class="btn alt" onclick="tab='tasks';render()">⚡ เพิ่มงานด่วน</button></div>
+  ${note?'<div class="alert ok" style="margin-top:10px">'+note+'</div>':''}</div>`;
+  if(P.left.length)h+=`<div class="alert bad">🚨 เวลาไม่พอ: ${P.left.map(x=>esc(x.t.title)+' ขาด '+fh(x.h)+' ชม.').join(' · ')} – ลองเพิ่มเวลาว่าง ลดเวลาเผื่อ หรือขอขยายเวลากับอาจารย์</div>`;
+  const ex=explain(P);
+  h+=`<div class="card"><h2>ลำดับงานที่ควรทำก่อน และเหตุผล</h2>${ex?'<ol class="rk">'+ex+'</ol>':'<p class="mu">ยังไม่มีงานค้าง 🎉</p>'}</div>`;
+  const days={};P.items.forEach(i=>(days[i.date]=days[i.date]||[]).push(i));
+  h+='<div class="card"><h2>แผนรายวัน</h2>';
+  Object.keys(days).sort().slice(0,21).forEach(k=>{
+    const tot=days[k].reduce((a,i)=>a+i.h,0);
+    h+=`<h3>${fromKey(k).getDate()} ${TH_S[fromKey(k).getMonth()]} (${DOW[fromKey(k).getDay()]}) · ${fh(tot)} ชม.</h3>`;
+    days[k].forEach(x=>{const t=S.tasks.find(t=>t.id==x.id);h+=`<div class="item"><span class="dot" style="background:${color(t.course)}"></span><div style="flex:1">${esc(t.title)} <span class="mu">– ${x.step} · ${fh(x.h)} ชม.</span></div><button class="btn sm alt" onclick="doneH(${t.id},${x.h})">เสร็จ ✓</button></div>`});
+  });
+  if(!Object.keys(days).length)h+='<p class="mu">ยังไม่มีแผน เพิ่มงานก่อนนะ</p>';
+  return h+'<p class="mu">แผนใช้เวลาพัก 10–15 นาทีทุก 2 ชม. และเว้นวันส่งไว้เป็นวันเผื่อเวลา (ยกเว้นงานที่ส่งวันนี้)</p></div>';
+}
+
+/* ---------- Actions ---------- */
+function runExtract(){
+  const v=document.getElementById('raw').value;if(!v.trim())return;
+  draft=extract(v);render();
+}
+function addTask(urgent){
+  const g=id=>document.getElementById(id).value;
+  const title=g('f_t').trim(),due=g('f_d');
+  if(!title||!due){alert('กรุณากรอกชื่องานและวันส่ง');return}
+  S.tasks.push({id:Date.now(),title,course:g('f_c').trim(),due,diff:+g('f_f'),est:Math.max(.5,+g('f_e')||1),done:0,req:g('f_r').split('\n').map(s=>s.trim()).filter(Boolean)});
+  draft={};save();
+  if(urgent||!S.snap){tab='plan';replan();note=urgent?'เพิ่มงานด่วนแล้ว จัดตารางใหม่ให้ทั้งหมด: '+note:note;render()}else{tab='cal';sel=due;render()}
+}
+function sample(){
+  const t=today(),k=n=>key(addD(t,n));let i=Date.now();
+  S.tasks.push(
+   {id:i++,title:'รายงานวิเคราะห์ตลาด',course:'MKT201',due:k(9),diff:4,est:10,done:0,req:['10 หน้า ไฟล์ PDF','ทำเป็นกลุ่ม 4 คน']},
+   {id:i++,title:'แบบฝึกหัดแคลคูลัส',course:'MAT101',due:k(5),diff:3,est:5,done:0,req:['ส่งผ่าน LMS']},
+   {id:i++,title:'พรีเซนต์วิชาการสื่อสาร',course:'COM110',due:k(10),diff:3,est:6,done:0,req:['สไลด์ไม่เกิน 12 หน้า','พูด 8 นาที']},
+   {id:i++,title:'แล็บฟิสิกส์',course:'PHY102',due:k(11),diff:5,est:9,done:0,req:['เขียนรายงานผลการทดลอง']});
+  save();replan();
+}
+function doneH(id,h){const t=S.tasks.find(t=>t.id===id);if(t){t.done=Math.min(t.est,(t.done||0)+h);save();render()}}
+function delTask(id){S.tasks=S.tasks.filter(t=>t.id!==id);save();render()}
+window.addEventListener('beforeunload',save);
+const ses=rd('sf_session');if(ses)enter(ses);
+render();
+</script>
+</body>
+</html>
